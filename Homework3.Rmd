@@ -1,0 +1,162 @@
+---
+title: "Homework3"
+author: "Brian Pham, bp26834, https://github.com/bpham010/SDS315-Homework3"
+date: "2024-01-30"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r global_options, echo=FALSE}
+knitr::opts_chunk$set(fig.height=4, fig.width=6, warning=FALSE, tidy=TRUE, message = FALSE, tidy.opts=list(width.cutoff=60))
+```
+
+
+
+# Problem 1
+
+### Part A)
+
+```{r, echo = FALSE, message = FALSE}
+
+library(readr)
+library(tidyverse)
+
+creatinine <- read_csv("~/SDS315/Homework3/creatinine.csv")
+
+creatinineModel <- lm(creatclear ~ age, data = creatinine)
+#coef(creatinineModel)
+
+#147.812958 - (0.6198159 * 55)
+
+```
+
+For a 55 year old, the expected creatinine clearance is 113.72. This was determined by fitting data provided by creatinine.csv in a linear regression model. Using the weights provided by the model, the equation 147.81 - 0.62x for the fitted model. Subsituting x for 55 yields 113.72, the expected creatinine clearance for a 55 year old. 
+
+
+### Part B)
+
+Creatinine clearance rate changes at a rate of -0.62 per year. This is determined as beta 1 or the predictor value of the linear model.
+
+### Part C). 
+
+Using the fitted equation, 147.81 - 0.62x, a 40 year old is expected to have a creatinine clearance of 123.02 while a 60 year old should have a clearance of 110.62. There are determined by the equations $Y = 147.81 - 0.62(40)$ and $Y = 147.81 - 0.62(60)$.
+
+
+```{r, echo=FALSE}
+
+#echo = False doesn't work here and I'm not sure why
+
+
+#round(0.6198159, 2)
+# 40 year old is hhealthier
+
+#147.812958 - (0.6198159 * 40)
+#147.812958 - (0.6198159 * 60)
+
+```
+
+
+
+# Problem 2
+
+```{r, echo = FALSE, message = FALSE, warning=FALSE}
+
+library(mosaic)
+library(readr)
+
+marketmodel <- read_csv("~/SDS315/Homework3/marketmodel.csv")
+
+# market change by stock change
+
+AAPLmodel <- lm(SPY ~ AAPL, data = marketmodel)
+GOOGmodel <- lm(SPY ~ GOOG, data = marketmodel)
+MRKmodel <- lm(SPY ~ MRK, data = marketmodel)
+JNJmodel <- lm(SPY ~ JNJ, data = marketmodel)
+WMTmodel <- lm(SPY ~ WMT, data = marketmodel)
+TGTmodel <- lm(SPY ~ TGT, data = marketmodel)
+
+# coef(AAPLmodel)
+# coef(GOOGmodel)
+# coef(MRKmodel)
+# coef(JNJmodel)
+# coef(WMTmodel)
+# coef(TGTmodel)
+# 
+# rsquared(AAPLmodel)
+# rsquared(GOOGmodel)
+# rsquared(MRKmodel)
+# rsquared(JNJmodel)
+# rsquared(WMTmodel)
+# rsquared(TGTmodel)
+
+
+
+```
+
+The beta of a stock is a measure of a stock's systematic risk compared to the market as a whole. It is the change in a stock's return in relation to a 1% change in the market. A stock with a high beta (>1) is subject to higher fluctuations and systematic risk since it can increase more than the market, and decrease more than the market. On the other hand, a stock with a low beta (<1) means that it contains less systematic risk since it will flucuate in values less than the market changes. The beta of a stock is calculated by the historial changes in market returns versus the returns of the stock. In other words, beta can also be interpreted as the the slope of stock since it is calculated using regression modeling and is the slope co-efficient.
+
+
+```{r, echo = FALSE}
+
+
+table <- data.frame("AAPL" = c(0.00076, 0.01254, rsquared(AAPLmodel)), 
+                    "GOOG" = c(0.00016, 0.06504, rsquared(GOOGmodel)),
+                    "MRK" = c(0.00057, 0.67782, rsquared(MRKmodel)),
+                    "JNJ" = c(0.00046, 0.74121, rsquared(JNJmodel)),
+                    "WMT" = c(0.00026, 0.54978, rsquared(WMTmodel)),
+                    "TGT" = c(0.00011, 0.35029, rsquared(TGTmodel)))
+
+rownames(table) <- c("Intercept", "Slope/Beta", "R-squared")
+
+knitr::kable(table)
+
+
+```
+
+In conclusion, AAPL or "Apple" has the lowest systematic risk since it has a beta of approximately of .01. The stock with the highest systematic risk is JNJ or "Johnson and Johnson" with a beta of .74. 
+
+
+
+
+
+
+
+
+# Problem 3:
+
+1). The estimated covid growth rate for Italy is 0.183 or approximately 18.321%. The doubling time for covid in Italy is 4 days. 
+
+2).The estimated covid growth rate for Italy is 0.276 or approximately 27.624%. The doubling time for covid in Italy is 3 days. 
+
+```{r,echo=FALSE}
+
+library(readr)
+library(ggplot2)
+covid <- read_csv("~/SDS315/Homework3/covid.csv")
+covidSpain <- covid[covid$country == "Spain",]
+covidItaly <- covid[covid$country == "Italy",]
+
+lm_covidSpain = lm(log(deaths) ~ days_since_first_death, data = covidSpain)
+lm_covidItaly = lm(log(deaths) ~ days_since_first_death, data = covidItaly)
+
+ggplot(data = covid) + geom_line(aes(x=days_since_first_death, y=deaths, col = country)) + labs(x="Days Since First Death", y = "Deaths")
+
+```
+
+
+# Problem 4
+
+```{r, echo = FALSE}
+
+
+milk <- read_csv("~/SDS315/Homework3/milk.csv")
+
+lmMilk <- lm(log(sales)  ~ log(price), data = milk)
+#coef(lmMilk)
+
+
+
+```
+
+The estimated price elasticity of demand for milk is -1.62. Since the data arises from a supply and demand curve, it can be fitted in a linear model if the sales and prices are raised to log. The fitted equation becomes $log(Q) = 4.72 - 1.62 * log(P)$ where beta is -1.62, hence the price elasticity of demand for milk. 
